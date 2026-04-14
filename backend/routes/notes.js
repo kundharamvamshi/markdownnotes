@@ -7,7 +7,7 @@ const dbPromise=require('../db');
 router.get('/',async(req,res)=>{
     try{
         const db=await dbPromise;
-        const allNotes=await db.all('SELECT * FROM notes');
+        const allNotes=await db.prepare('SELECT * FROM notes').all;
         res.json(allNotes);
     }
     catch(error){
@@ -23,7 +23,7 @@ router.post('/',async(req,res)=>{
     }
     try{
         const db=await dbPromise;
-        await db.run(`INSERT INTO notes (title,content) VALUES (?,?)`,[title,content]);
+        await db.prepare(`INSERT INTO notes (title,content) VALUES (?,?)`).run(title,content);
         res.status(200).json({message:'Note created successfully'});
     }   catch(error){
         console.error(`Error creating note: ${error.message}`);
@@ -40,11 +40,11 @@ router.put('/:id',async (req,res)=>{
     }
     try{
         const db=await dbPromise;
-        const note=await db.get(`SELECT * FROM notes WHERE id=?`,[id]);
+        const note=await db.prepare(`SELECT * FROM notes WHERE id=?`).get([id]);
         if (!note){
             return res.status(404).json({error:'Note not found'});
         }
-        await db.run(`UPDATE notes SET title=?,content=? WHERE id=?`,[title,content,id]);
+        await db.prepare(`UPDATE notes SET title=?,content=? WHERE id=?`).run([title,content,id]);
         res.status(200).json({message:'Note updated Successfully'});
     }
     catch(error){
@@ -57,11 +57,11 @@ router.delete('/:id',async(req,res)=>{
     const {id}=req.params;
     try{
         const db=await dbPromise;
-        const note =await db.get(`SELECT * FROM notes WHERE id=?`,[id]);
+        const note =await db.prepare(`SELECT * FROM notes WHERE id=?`).get([id]);
         if(!note){
             return res.status(404).json({message:'Note not found'});
         }
-        await db.run('DELETE FROM notes WHERE id=?',[id]);
+        await db.prepare('DELETE FROM notes WHERE id=?').run([id]);
         res.status(200).json({message:'Note deleted successfully'});
     }catch(error){
         console.error(`Error deleting note: ${error.message}`);

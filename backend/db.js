@@ -1,4 +1,4 @@
-const sqlite3 = require('sqlite3');
+const sqlite3 = require('better-sqlite3');
 const { open } = require('sqlite');
 
 const dbPromise = open({
@@ -9,13 +9,13 @@ const dbPromise = open({
 (async () => {
     const db = await dbPromise;
 
-    await db.exec(`
+    await db.prepare(`
         CREATE TABLE IF NOT EXISTS notes (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             title TEXT NOT NULL,
             content TEXT NOT NULL
         )
     `);
-})();
+}).run();
 
 module.exports = dbPromise;
