@@ -1,21 +1,13 @@
-const sqlite3 = require('better-sqlite3');
-const { open } = require('sqlite');
+const Database = require('better-sqlite3');
 
-const dbPromise = open({
-    filename: 'notes.db',
-    driver: sqlite3.Database
-});
+const db = new Database('notes.db');
 
-(async () => {
-    const db = await dbPromise;
+db.prepare(`
+    CREATE TABLE IF NOT EXISTS notes (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        title TEXT NOT NULL,
+        content TEXT NOT NULL
+    )
+`).run();
 
-    await db.prepare(`
-        CREATE TABLE IF NOT EXISTS notes (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            title TEXT NOT NULL,
-            content TEXT NOT NULL
-        )
-    `);
-}).run();
-
-module.exports = dbPromise;
+module.exports = db;
