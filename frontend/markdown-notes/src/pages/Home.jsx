@@ -19,6 +19,8 @@ function Home() {
 
     const [notes, setNotes] = useState([]);
 
+    const [searchItem , setSearchItem] = useState('');
+
     useEffect(() => {
         fetchNotes();
     }, []);
@@ -77,7 +79,7 @@ return (
             <Preview title={title} content={content} />
         </div>
         <button onClick={handleSave} className='text-white bg-blue-500 rounded-lg w-[150px] h-[40px]'>Save</button>
-        <NotesList notes={notes} setTitle={setTitle} setContent={setContent} setNoteId={setNoteId} fetchNotes={fetchNotes} />
+        <NotesList searchItem={searchItem} setSearchItem={setSearchItem} notes={notes} setTitle={setTitle} setContent={setContent} setNoteId={setNoteId} fetchNotes={fetchNotes} />
         <ToastContainer
             position="bottom-center"
             autoClose={2000}
